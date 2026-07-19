@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120">
+  <!-- Kawung-inspired batik tile: four petals around a centre, repeated at the corners
+       so it tessellates seamlessly. Gold strokes on transparent; used at low opacity. -->
+  <defs>
+    <g id="kawung" fill="none" stroke="#c8a24c" stroke-width="1.1">
+      <ellipse cx="60" cy="34" rx="12" ry="20"/>
+      <ellipse cx="60" cy="86" rx="12" ry="20"/>
+      <ellipse cx="34" cy="60" rx="20" ry="12"/>
+      <ellipse cx="86" cy="60" rx="20" ry="12"/>
+      <circle cx="60" cy="60" r="3.2" fill="#c8a24c" stroke="none"/>
+    </g>
+  </defs>
+  <use href="#kawung"/>
+  <use href="#kawung" transform="translate(-60,-60)"/>
+  <use href="#kawung" transform="translate(60,-60)"/>
+  <use href="#kawung" transform="translate(-60,60)"/>
+  <use href="#kawung" transform="translate(60,60)"/>
+</svg>

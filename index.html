@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Miles Dashboard — Singapore card miles, optimised</title>
+<meta name="description" content="Which Singapore credit card earns the most miles on your next purchase — a premium recommendation engine for Joseph's wallet.">
+<link rel="icon" href="assets/logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="motif-wash" aria-hidden="true"></div>
+
+<header class="site-header" id="top">
+  <a class="brand" href="#top">
+    <img src="assets/logo.svg" alt="" width="30" height="30">
+    <span class="brand-name">Miles<span class="brand-thin">Dashboard</span></span>
+  </a>
+  <nav class="nav">
+    <a href="#recommend">Recommend</a>
+    <a href="#wallet">Wallet</a>
+    <a href="#redemptions">Redemptions</a>
+  </nav>
+  <span class="snapshot-badge" id="snapshotBadge">verified —</span>
+</header>
+
+<main>
+  <!-- HERO + RECOMMENDATION CONSOLE -->
+  <section class="hero" id="recommend">
+    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="hero-inner">
+      <p class="eyebrow">Singapore · KrisFlyer-first</p>
+      <h1 class="hero-title">Earn the most miles on<br><em>every</em> dollar you spend.</h1>
+      <p class="hero-sub">Describe a purchase — a dinner, a flight, a grocery run overseas — and see which card in your wallet earns most, cap-aware and quirk-aware.</p>
+
+      <form class="console" id="console" autocomplete="off">
+        <div class="console-row">
+          <input type="text" id="query" class="query-input"
+                 placeholder="e.g. dinner at a restaurant, or flight on Singapore Airlines"
+                 aria-label="Describe your purchase">
+          <div class="amount-wrap">
+            <span class="amount-prefix">S$</span>
+            <input type="number" id="amount" class="amount-input" min="1" step="any" placeholder="120" aria-label="Amount in SGD">
+          </div>
+          <button type="submit" class="rank-btn">Rank<span class="btn-glow" aria-hidden="true"></span></button>
+        </div>
+        <div class="chips" id="chips" aria-label="Example purchases"></div>
+        <p class="detected" id="detected"></p>
+      </form>
+
+      <div class="results" id="results" aria-live="polite"></div>
+    </div>
+    <div class="scroll-cue" aria-hidden="true"><span></span></div>
+  </section>
+
+  <!-- WALLET -->
+  <section class="section" id="wallet">
+    <div class="section-head reveal">
+      <p class="section-eyebrow">Your wallet</p>
+      <h2 class="section-title">Eight cards, one strategy</h2>
+      <p class="section-lede">Live monthly-cap tracking. Log what you've already spent in each bonus bucket and the ranker warns you before you overshoot — figures persist on this device.</p>
+    </div>
+    <div class="card-grid" id="walletGrid"></div>
+  </section>
+
+  <!-- REDEMPTIONS -->
+  <section class="section section-alt" id="redemptions">
+    <div class="section-head reveal">
+      <p class="section-eyebrow">Where the miles go</p>
+      <h2 class="section-title">Redemption sweet spots</h2>
+      <p class="section-lede">Every card's points valued conservatively at 2.0¢ / mile. Watch the expiry clocks — some points evaporate faster than others.</p>
+    </div>
+    <div class="redeem-grid" id="redeemGrid"></div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-cols">
+    <div>
+      <div class="brand footer-brand"><img src="assets/logo.svg" alt="" width="26" height="26"><span class="brand-name">Miles<span class="brand-thin">Dashboard</span></span></div>
+      <p class="footer-note">A personal miles-optimisation tool for Joseph &amp; Melissa's Singapore cards. Not financial advice.</p>
+    </div>
+    <div>
+      <h4>Data &amp; provenance</h4>
+      <p class="footer-note" id="provenance">Primary source: The MileLion review pages. Secondary: issuer official pages.</p>
+      <p class="footer-note" id="unverifiedNote"></p>
+    </div>
+    <div>
+      <h4>Baked assumptions</h4>
+      <ul class="footer-list">
+        <li>KrisFlyer UOB · S$1,000/yr SIA-spend condition <b>met</b></li>
+        <li>HSBC Revolution · standard 4 mpd tier (not the S$50k EGA 8 mpd)</li>
+        <li>UOB Lady's (classic) · enrolled category <b>Dining</b></li>
+        <li>Citi Rewards · <b>Mastercard</b> (pairs with Amaze)</li>
+      </ul>
+    </div>
+  </div>
+  <p class="footer-fine" id="footerFine"></p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

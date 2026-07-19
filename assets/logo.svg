@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 34 34">
+  <!-- Stylised origami crane / paper plane in gold — the dashboard's mark. -->
+  <g fill="none" stroke="#d8b45e" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M4 17 L30 6 L20 30 L16 20 Z" fill="#c8a24c" fill-opacity="0.16"/>
+    <path d="M4 17 L20 20 L30 6" />
+    <path d="M20 20 L16 20 L20 30" />
+  </g>
+</svg>
