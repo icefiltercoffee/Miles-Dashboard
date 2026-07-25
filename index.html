@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#070f22">
 <title>Miles Dashboard — Singapore card miles, optimised</title>
-<meta name="description" content="Which Singapore credit card earns the most miles on your next purchase — a premium recommendation engine for Joseph's wallet.">
+<meta name="description" content="Which Singapore credit card earns the most miles on your next purchase — a premium, cap-aware recommendation engine.">
 <link rel="icon" href="assets/logo.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,14 +16,23 @@
 <div class="motif-wash" aria-hidden="true"></div>
 
 <header class="site-header" id="top">
-  <a class="brand" href="#top">
+  <a class="brand" href="#recommend">
     <img src="assets/logo.svg" alt="" width="30" height="30">
     <span class="brand-name">Miles<span class="brand-thin">Dashboard</span></span>
   </a>
-  <nav class="nav">
-    <a href="#recommend">Recommend</a>
-    <a href="#wallet">Wallet</a>
-    <a href="#redemptions">Redemptions</a>
+  <nav class="nav" aria-label="Primary">
+    <a href="#recommend" data-navlink="recommend">
+      <span class="pass-stub" aria-hidden="true"></span><span class="pass-body">Recommend</span>
+    </a>
+    <a href="#wallet" data-navlink="wallet">
+      <span class="pass-stub" aria-hidden="true"></span><span class="pass-body">Wallet</span>
+    </a>
+    <a href="#health" data-navlink="health">
+      <span class="pass-stub" aria-hidden="true"></span><span class="pass-body">Health</span>
+    </a>
+    <a href="#redemptions" data-navlink="redemptions">
+      <span class="pass-stub" aria-hidden="true"></span><span class="pass-body">Redemptions</span>
+    </a>
   </nav>
   <span class="snapshot-badge" id="snapshotBadge">verified —</span>
 </header>
@@ -31,12 +41,31 @@
   <!-- HERO + RECOMMENDATION CONSOLE -->
   <section class="hero" id="recommend">
     <div class="hero-bg" aria-hidden="true"></div>
+    <div class="flyover" id="flyover" aria-hidden="true">
+    <!-- Side-view widebody, nose to the right. Body in cabin silver, tail fin in
+         champagne gold — an airline silhouette, not any carrier's actual mark. -->
+    <svg viewBox="0 0 150 46" fill="none">
+      <path class="jet-body" d="M13 27.5c-3.5-.4-5.2-1-5.2-1.9 0-.9 1.7-1.5 5.2-1.9l22-2.2 12.5-.5 62-1.2c8.5 0 15.4.7 20.6 2.1 2.3.6 3.4 1.2 3.4 1.7s-1.1 1.1-3.4 1.7c-5.2 1.4-12.1 2.1-20.6 2.1l-62-1.2-12.5-.5-22-2.2Z" fill="currentColor"/>
+      <path class="jet-wing" d="M62 25.4 44.5 38.6c-.7.5-.4 1.2.5 1.2h9.6c.7 0 1.4-.2 2-.6L82 25.9l-20 -.5Z" fill="currentColor" opacity=".72"/>
+      <path class="jet-wing" d="M62 22.6 44.5 9.4c-.7-.5-.4-1.2.5-1.2h9.6c.7 0 1.4.2 2 .6L82 22.1l-20 .5Z" fill="currentColor" opacity=".38"/>
+      <ellipse class="jet-engine" cx="66" cy="29.6" rx="8.4" ry="3.3" fill="currentColor" opacity=".85"/>
+      <path class="jet-tail" d="M14.5 23.2 22.8 5.6c.4-.9 1.1-1.4 2-1.4h6.4c1 0 1.6.7 1.4 1.7L29 23.6l-14.5-.4Z" fill="var(--gold-bright)"/>
+      <path class="jet-stab" d="M17 26.6 12.4 35c-.4.7 0 1.4.8 1.4h5.2c.6 0 1.2-.3 1.6-.8l6-8.6-9-.4Z" fill="currentColor" opacity=".6"/>
+    </svg>
+  </div>
     <div class="hero-inner">
       <p class="eyebrow">Singapore · KrisFlyer-first</p>
-      <h1 class="hero-title">Earn the most miles on<br><em>every</em> dollar you spend.</h1>
-      <p class="hero-sub">Describe a purchase — a dinner, a flight, a grocery run overseas — and see which card in your wallet earns most, cap-aware and quirk-aware.</p>
+      <h1 class="hero-title">Describe a purchase.<br>See which card <em>earns most</em>.</h1>
+      <p class="hero-sub">A dinner, a flight, a grocery run overseas.</p>
 
       <form class="console" id="console" autocomplete="off">
+        <div class="mode-toggle" id="modeToggle" role="tablist" aria-label="Which cards to rank">
+          <button type="button" class="mode-btn" data-mode="wallet" role="tab" aria-selected="false">
+            <span class="mode-dot" aria-hidden="true"></span>My wallet
+          </button>
+          <button type="button" class="mode-btn is-active" data-mode="all" role="tab" aria-selected="true">All cards</button>
+          <span class="mode-slider" aria-hidden="true"></span>
+        </div>
         <div class="console-row">
           <input type="text" id="query" class="query-input"
                  placeholder="e.g. dinner at a restaurant, or flight on Singapore Airlines"
@@ -48,10 +77,55 @@
           <button type="submit" class="rank-btn">Rank<span class="btn-glow" aria-hidden="true"></span></button>
         </div>
         <div class="chips" id="chips" aria-label="Example purchases"></div>
-        <p class="detected" id="detected"></p>
+        <p class="detected" id="detected" aria-live="polite"></p>
       </form>
 
       <div class="results" id="results" aria-live="polite"></div>
+
+      <!-- DESTINATION + RUNWAY — the redemption goal the miles are being saved for -->
+      <section class="journey" id="journey" aria-labelledby="journeyTitle" hidden>
+        <div class="journey-head">
+          <h2 class="journey-title" id="journeyTitle">Choose your next <em>Business Class</em> destination</h2>
+          <p class="journey-lede">Where the miles are going.</p>
+        </div>
+        <div class="journey-controls">
+          <label class="journey-field">
+            <span class="field-label">Destination</span>
+            <div class="select-wrap">
+              <select id="destSelect" class="dest-select"></select>
+              <svg class="select-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </div>
+          </label>
+          <label class="journey-field journey-field-balance">
+            <span class="field-label">Your KrisFlyer miles</span>
+            <input type="number" id="milesBalance" class="balance-input" min="0" step="500" placeholder="0" aria-describedby="balanceHint">
+          </label>
+          <span class="balance-hint" id="balanceHint">Saved on this device</span>
+        </div>
+
+        <div class="runway-wrap">
+          <div class="runway" id="runway">
+            <span class="runway-label runway-label-from">SIN</span>
+            <span class="runway-label runway-label-to" id="runwayTo">—</span>
+            <div class="runway-strip" aria-hidden="true">
+              <span class="runway-centerline"></span>
+              <span class="runway-fill" id="runwayFill"></span>
+            </div>
+            <div class="plane" id="plane" aria-hidden="true">
+              <svg viewBox="0 0 150 46" fill="none">
+                <path d="M13 27.5c-3.5-.4-5.2-1-5.2-1.9 0-.9 1.7-1.5 5.2-1.9l22-2.2 12.5-.5 62-1.2c8.5 0 15.4.7 20.6 2.1 2.3.6 3.4 1.2 3.4 1.7s-1.1 1.1-3.4 1.7c-5.2 1.4-12.1 2.1-20.6 2.1l-62-1.2-12.5-.5-22-2.2Z" fill="currentColor"/>
+                <path d="M62 25.4 44.5 38.6c-.7.5-.4 1.2.5 1.2h9.6c.7 0 1.4-.2 2-.6L82 25.9l-20 -.5Z" fill="currentColor" opacity=".72"/>
+                <ellipse cx="66" cy="29.6" rx="8.4" ry="3.3" fill="currentColor" opacity=".85"/>
+                <path d="M14.5 23.2 22.8 5.6c.4-.9 1.1-1.4 2-1.4h6.4c1 0 1.6.7 1.4 1.7L29 23.6l-14.5-.4Z" fill="var(--gold-bright)"/>
+                <path d="M17 26.6 12.4 35c-.4.7 0 1.4.8 1.4h5.2c.6 0 1.2-.3 1.6-.8l6-8.6-9-.4Z" fill="currentColor" opacity=".6"/>
+              </svg>
+            </div>
+          </div>
+          <p class="runway-progress" id="runwayProgress" aria-live="polite"></p>
+        </div>
+
+        <dl class="journey-stats" id="journeyStats"></dl>
+      </section>
     </div>
     <div class="scroll-cue" aria-hidden="true"><span></span></div>
   </section>
@@ -60,18 +134,37 @@
   <section class="section" id="wallet">
     <div class="section-head reveal">
       <p class="section-eyebrow">Your wallet</p>
-      <h2 class="section-title">Eight cards, one strategy</h2>
-      <p class="section-lede">Live monthly-cap tracking. Log what you've already spent in each bonus bucket and the ranker warns you before you overshoot — figures persist on this device.</p>
+      <h2 class="section-title">What your cards are good for</h2>
+      <p class="section-lede">Log what you've already spent in each bonus bucket and the ranker warns you before you overshoot — figures persist on this device.</p>
+      <div class="wallet-actions">
+        <button type="button" class="ghost-btn" id="editWalletBtn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+          Choose my cards
+        </button>
+        <button type="button" class="ghost-btn" id="walletShowAll" hidden>Show other cards</button>
+        <span class="wallet-owned-note" id="walletOwnedNote"></span>
+      </div>
     </div>
     <div class="card-grid" id="walletGrid"></div>
   </section>
 
+  <!-- WALLET HEALTH CHECK -->
+  <section class="section section-alt" id="health">
+    <div class="section-head reveal">
+      <p class="section-eyebrow">Wallet health check</p>
+      <h2 class="section-title">Where your wallet is strong</h2>
+      <p class="section-lede">Across everyday categories, the best earn rate your owned cards can reach. Green is covered, amber is capped or thin, red is a gap worth closing.</p>
+    </div>
+    <div class="health-summary reveal" id="healthSummary"></div>
+    <div class="health-grid" id="healthGrid"></div>
+  </section>
+
   <!-- REDEMPTIONS -->
-  <section class="section section-alt" id="redemptions">
+  <section class="section" id="redemptions">
     <div class="section-head reveal">
       <p class="section-eyebrow">Where the miles go</p>
       <h2 class="section-title">Redemption sweet spots</h2>
-      <p class="section-lede">Every card's points valued conservatively at 2.0¢ / mile. Watch the expiry clocks — some points evaporate faster than others.</p>
+      <p class="section-lede">Know where your rewards are best used.</p>
     </div>
     <div class="redeem-grid" id="redeemGrid"></div>
   </section>
@@ -81,7 +174,11 @@
   <div class="footer-cols">
     <div>
       <div class="brand footer-brand"><img src="assets/logo.svg" alt="" width="26" height="26"><span class="brand-name">Miles<span class="brand-thin">Dashboard</span></span></div>
-      <p class="footer-note">A personal miles-optimisation tool for Joseph &amp; Melissa's Singapore cards. Not financial advice.</p>
+      <p class="footer-note">A personal miles-optimisation tool for Singapore cards. Not financial advice.</p>
+      <button type="button" class="ghost-btn footer-quirk-btn" id="reportQuirkBtn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+        Report a merchant quirk
+      </button>
     </div>
     <div>
       <h4>Data &amp; provenance</h4>
@@ -92,7 +189,8 @@
       <h4>Baked assumptions</h4>
       <ul class="footer-list">
         <li>KrisFlyer UOB · S$1,000/yr SIA-spend condition <b>met</b></li>
-        <li>HSBC Revolution · standard 4 mpd tier (not the S$50k EGA 8 mpd)</li>
+        <li>HSBC Revolution · standard tier (not the S$50k EGA tier)</li>
+        <li>Rates are <b>KrisFlyer-true</b> · HSBC's headline 4 mpd is 3.33 mpd to KrisFlyer (3:1 premium since 16 Jan 2025)</li>
         <li>UOB Lady's (classic) · enrolled category <b>Dining</b></li>
         <li>Citi Rewards · <b>Mastercard</b> (pairs with Amaze)</li>
       </ul>
@@ -100,6 +198,72 @@
   </div>
   <p class="footer-fine" id="footerFine"></p>
 </footer>
+
+<!-- MOBILE BOTTOM NAV -->
+<nav class="tabbar" aria-label="Mobile primary">
+  <a href="#recommend" data-navlink="recommend" class="tab is-active">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.3-4.3"/><circle cx="11" cy="11" r="8"/></svg>
+    <span>Rank</span>
+  </a>
+  <a href="#wallet" data-navlink="wallet" class="tab">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2.5"/><path d="M2 10h20"/></svg>
+    <span>Wallet</span>
+  </a>
+  <a href="#health" data-navlink="health" class="tab">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2 5 4-12 2 7h6"/></svg>
+    <span>Health</span>
+  </a>
+  <a href="#redemptions" data-navlink="redemptions" class="tab">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12v9H4v-9"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/><path d="M12 7S9 2 6.5 3.5 8 7 12 7Zm0 0s3-5 5.5-3.5S16 7 12 7Z"/></svg>
+    <span>Redeem</span>
+  </a>
+</nav>
+
+<!-- ONBOARDING / WALLET PICKER OVERLAY -->
+<div class="overlay" id="onboardOverlay" role="dialog" aria-modal="true" aria-labelledby="onboardTitle" hidden>
+  <div class="overlay-scrim" data-close-onboard></div>
+  <div class="sheet onboard-sheet" role="document">
+    <div class="sheet-head">
+      <p class="section-eyebrow">Set up in ten seconds</p>
+      <h2 class="sheet-title" id="onboardTitle">Which cards do you own?</h2>
+      <p class="sheet-lede">Tap to add the cards in your wallet. We'll rank only what you hold and check it for gaps — change this anytime.</p>
+    </div>
+    <div class="pick-grid" id="pickGrid"></div>
+    <div class="sheet-foot">
+      <button type="button" class="ghost-btn" id="onboardSkip">Skip — use all cards</button>
+      <button type="button" class="rank-btn onboard-save" id="onboardSave">Save wallet<span class="onboard-save-count" id="onboardSaveCount"></span><span class="btn-glow" aria-hidden="true"></span></button>
+    </div>
+  </div>
+</div>
+
+<!-- REPORT A QUIRK MODAL -->
+<div class="overlay" id="quirkOverlay" role="dialog" aria-modal="true" aria-labelledby="quirkTitle" hidden>
+  <div class="overlay-scrim" data-close-quirk></div>
+  <div class="sheet quirk-sheet" role="document">
+    <button type="button" class="sheet-x" id="quirkClose" aria-label="Close">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="sheet-head">
+      <p class="section-eyebrow">Community intel</p>
+      <h2 class="sheet-title" id="quirkTitle">Report a merchant quirk</h2>
+      <p class="sheet-lede">Spotted a merchant that codes oddly — Grab as transport, an insurer that earns nothing, an overseas MCC surprise? Tell us. Everything is reviewed before it goes live; nothing publishes automatically.</p>
+    </div>
+    <form class="quirk-form" id="quirkForm">
+      <label class="field">
+        <span class="field-label">Merchant or category</span>
+        <input type="text" id="quirkMerchant" class="query-input" placeholder="e.g. iHerb, Income insurance, SP utilities" required>
+      </label>
+      <label class="field">
+        <span class="field-label">What actually happens</span>
+        <textarea id="quirkBody" class="query-input" rows="3" placeholder="e.g. Codes as an overseas transaction even when billed in SGD, so it misses the online bonus." required></textarea>
+      </label>
+      <div class="quirk-foot">
+        <span class="quirk-hint" id="quirkHint">Reviewed manually — nothing goes live automatically.</span>
+        <button type="submit" class="rank-btn">Submit<span class="btn-glow" aria-hidden="true"></span></button>
+      </div>
+    </form>
+  </div>
+</div>
 
 <script src="script.js"></script>
 </body>
